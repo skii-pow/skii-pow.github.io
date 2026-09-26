@@ -52,7 +52,7 @@ function submitQuiz(){const short=$('#quizAnswer')?$('#quizAnswer').value:'';loc
 
 /* SCHOOLS */
 function renderSchools(){const tb=$('#schoolTable');if(!tb)return;const q=(($('#searchSchool')||{}).value||'').toLowerCase();const rows=DATA.schools.filter(s=>(schoolFilter==='all'||s.type===schoolFilter)&&s.name.toLowerCase().includes(q));tb.querySelector('tbody').innerHTML=rows.map(s=>`<tr><td><b>${s.name}</b></td><td><span class="badge b-${{'THPT':'blue','Nghề':'pink','9+':'orange','GDTX':'green'}[s.type]||'blue'}">${s.type}</span></td><td>${s.diemChuan}</td><td>${s.totNghiep}%</td><td>${s.chatLuong}%</td></tr>`).join('')||'<tr><td colspan="5" style="text-align:center;opacity:.5;padding:20px">Không tìm thấy~</td></tr>';renderStats(rows);}
-function renderStats(rows){const list=(rows&&rows.length)?rows:DATA.schools;const avg=Math.round(list.reduce((a,s)=>a+s.totNghiep,0)/list.length);tick($('#cSchools'),list.length);tick($('#cStudents'),(DATA.students||[]).length);const ca=$('#cAvg');if(ca)ca.textContent=avg+'%';}
+function renderStats(rows){const list=(rows&&rows.length)?rows:DATA.schools;const avg=Math.round(list.reduce((a,s)=>a+s.totNghiep,0)/list.length);tick($('#cSchools'),list.length);const cStudents=$('#cStudents');if(cStudents)cStudents.textContent='44 274';const ca=$('#cAvg');if(ca)ca.textContent=avg+'%';}
 function tick(el,to){if(!el)return;const t0=performance.now();(function f(){const k=Math.min(1,(performance.now()-t0)/900);el.textContent=Math.round(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f);})();}
 
 /* CHAT */

@@ -257,6 +257,11 @@ body[data-page="home"] .btn-login{background:#0878d8;border-radius:9px;box-shado
 #info .info-body h3{min-height:2.6em;margin-bottom:6px;color:#194f80;font-size:.86rem;line-height:1.4}
 #info .info-body p{min-height:3em;margin-bottom:10px;color:#58748d;font-size:.75rem;line-height:1.5}
 #info .info-link{color:#0876c8;font-size:.74rem}
+.library-banner{display:grid;grid-template-columns:150px minmax(0,1fr);align-items:center;gap:26px;width:min(1200px,94vw);margin:34px auto 0;padding:18px 24px;border:1px solid #d9eaf5;border-radius:9px;background:linear-gradient(110deg,#e7f5ff,#edf8fb);box-shadow:0 5px 18px #174d710c}
+.library-banner-copy h2{margin-bottom:7px;color:#174d83;font-size:1.1rem;font-weight:800}
+.library-banner-copy p{color:#58748d;font-size:.88rem;line-height:1.5}
+.library-banner img{display:block;width:132px;height:132px;border-radius:5px;object-fit:contain;object-position:center}
+@media(max-width:600px){.library-banner{grid-template-columns:76px minmax(0,1fr);gap:12px;width:calc(100% - 28px);margin-top:22px;padding:12px}.library-banner-copy h2{font-size:.83rem}.library-banner-copy p{font-size:.68rem;line-height:1.45}.library-banner img{width:76px;height:76px}}
 @media(max-width:1120px){
   body[data-page="home"] .hdr{padding-inline:16px;gap:10px}
   body[data-page="home"] .hdr-brand b{font-size:.77rem}
