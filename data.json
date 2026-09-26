@@ -1,0 +1,33 @@
+{
+  "schools": [
+    {"id":1,"name":"THPT Phan Chu Trinh","type":"THPT","diemChuan":35.5,"totNghiep":98,"chatLuong":95},
+    {"id":2,"name":"THPT Trần Phú","type":"THPT","diemChuan":33.0,"totNghiep":97,"chatLuong":93},
+    {"id":3,"name":"THPT Lê Quý Đôn","type":"THPT","diemChuan":31.5,"totNghiep":96,"chatLuong":92},
+    {"id":4,"name":"THPT Hoàng Hoa Thám","type":"THPT","diemChuan":29.0,"totNghiep":95,"chatLuong":88},
+    {"id":5,"name":"THPT Ngũ Hành Sơn","type":"THPT","diemChuan":26.5,"totNghiep":94,"chatLuong":85},
+    {"id":6,"name":"THPT Tôn Thất Tùng","type":"THPT","diemChuan":25.0,"totNghiep":93,"chatLuong":84},
+    {"id":7,"name":"THPT Thái Phiên","type":"THPT","diemChuan":27.5,"totNghiep":94,"chatLuong":86},
+    {"id":8,"name":"THPT Nguyễn Hiền","type":"THPT","diemChuan":24.0,"totNghiep":92,"chatLuong":82},
+    {"id":9,"name":"THPT Ngô Quyền","type":"THPT","diemChuan":23.0,"totNghiep":91,"chatLuong":80},
+    {"id":10,"name":"THPT Nguyễn Thượng Hiền","type":"THPT","diemChuan":22.0,"totNghiep":90,"chatLuong":79},
+    {"id":11,"name":"CĐ Công nghệ Việt-Hàn","type":"Nghề","diemChuan":18.0,"totNghiep":92,"chatLuong":90},
+    {"id":12,"name":"TC Nghề Giao thông Công chánh","type":"Nghề","diemChuan":15.0,"totNghiep":90,"chatLuong":86},
+    {"id":13,"name":"CĐ Công nghệ & Kinh tế miền Trung","type":"9+","diemChuan":12.0,"totNghiep":89,"chatLuong":85},
+    {"id":14,"name":"Trung tâm GDTX số 1 Đà Nẵng","type":"GDTX","diemChuan":10.0,"totNghiep":88,"chatLuong":80}
+  ],
+  "students": [
+    {"id":1,"name":"Nguyễn Thảo Vy","class":"9/1","math":9.4,"lit":8.8,"eng":9.2,"gpa":9.1,"interest":"CNTT","quiz":null},
+    {"id":2,"name":"Trần Minh Khang","class":"9/2","math":8.2,"lit":7.6,"eng":8.1,"gpa":8.0,"interest":"Cơ khí","quiz":null},
+    {"id":3,"name":"Lê Thị Bảo Trâm","class":"9/1","math":7.0,"lit":7.8,"eng":6.9,"gpa":7.2,"interest":"Du lịch","quiz":null},
+    {"id":4,"name":"Võ Gia Huy","class":"9/3","math":6.2,"lit":5.9,"eng":6.1,"gpa":6.1,"interest":"Ẩm thực","quiz":null},
+    {"id":5,"name":"Đặng Ngọc Linh","class":"9/2","math":5.1,"lit":5.8,"eng":5.0,"gpa":5.3,"interest":"Thiết kế","quiz":null},
+    {"id":6,"name":"Phạm Quốc Bảo","class":"9/3","math":4.5,"lit":4.8,"eng":4.4,"gpa":4.6,"interest":"Ô tô","quiz":null}
+  ],
+  "articles": [
+    {"id":1,"title":"Điểm chuẩn lớp 10 Đà Nẵng 2025-2026","src":"https://danang.gov.vn","preview":"Sở GD&ĐT công bố điểm chuẩn tuyển sinh lớp 10 các trường THPT công lập..."},
+    {"id":2,"title":"Quy chế tuyển sinh THPT 2026 - BGD","src":"https://moet.gov.vn","preview":"Bộ GD&ĐT ban hành quy chế mới về tuyển sinh THPT, bổ sung phương thức xét tuyển..."},
+    {"id":3,"title":"Đà Nẵng: 98.2% HS tốt nghiệp THCS","src":"https://danang.gov.vn","preview":"Năm học 2024-2025, tỷ lệ tốt nghiệp THCS đạt 98.2%, tăng 0.5% so với năm trước..."},
+    {"id":4,"title":"Hệ 9+: Lộ trình mới cho HS Đà Nẵng","src":"https://tuyensinh.edu.vn","preview":"Mô hình 9+ giúp học sinh vừa học văn hóa vừa học nghề từ lớp 10..."},
+    {"id":5,"title":"Hướng nghiệp sớm: Chìa khóa thành công","src":"https://giaoducthoidai.vn","preview":"Các chuyên gia giáo dục nhấn mạnh tầm quan trọng của việc hướng nghiệp từ lớp 8..."}
+  ]
+}

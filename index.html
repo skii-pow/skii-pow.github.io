@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title> Nền tảng hướng nghiệp hệ 9+ 🌉 – Hiểu nghề, Hiểu mình</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="home">
+
+<div class="liquid-bg"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+
+<!-- LOGIN -->
+<div class="login-overlay hidden" id="loginOverlay" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="login-card liquid-glass">
+    <button class="modal-x" id="closeLogin" type="button" aria-label="Đóng">✕</button>
+    <div class="login-avatar">🌉</div>
+    <h2 id="authTitle">Chào mừng bạn trở lại</h2>
+    <p class="login-sub">Đăng nhập để lưu lại hành trình hướng nghiệp.</p>
+    <form id="loginForm" class="reg-form">
+      <input id="loginEmail" name="email" type="email" placeholder="Email" autocomplete="email" required>
+      <input id="loginPass" name="password" type="password" placeholder="Mật khẩu" autocomplete="current-password" required>
+      <p class="login-error" id="loginError" role="status" aria-live="polite"></p>
+      <button type="submit" class="btn-submit">Đăng nhập</button>
+    </form>
+    <form id="regForm" class="reg-form hidden">
+      <input id="regName" name="name" placeholder="Họ và tên" autocomplete="name" maxlength="80" required>
+      <input id="regEmail" name="email" type="email" placeholder="Email" autocomplete="email" required>
+      <input id="regPhone" name="phone" type="tel" placeholder="Số điện thoại (không bắt buộc)" autocomplete="tel" maxlength="20">
+      <input id="regPass" name="password" type="password" placeholder="Mật khẩu (ít nhất 8 ký tự)" autocomplete="new-password" minlength="8" required>
+      <input id="regPass2" name="passwordConfirm" type="password" placeholder="Nhập lại mật khẩu" autocomplete="new-password" minlength="8" required>
+      <p class="login-error" id="regError" role="status" aria-live="polite"></p>
+      <button type="submit" class="btn-submit">Tạo tài khoản</button>
+    </form>
+    <p class="auth-switch"><span id="authSwitchText">Chưa có tài khoản?</span> <button id="authSwitch" type="button">Đăng ký</button></p>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header class="hdr liquid-glass" id="top">
+  <button class="hdr-menu" id="mobileNavToggle" type="button" aria-label="Mở menu" aria-expanded="false" aria-controls="siteNav">☰</button>
+  <div class="hdr-left">
+    <div class="hdr-logo">🌉</div>
+    <div class="hdr-brand"><b>Trường THCS Huỳnh Thúc Kháng</b><small>Hướng nghiệp – Kiến tạo tương lai</small></div>
+  </div>
+  <nav class="hdr-nav" id="siteNav" aria-label="Điều hướng chính">
+    <span class="nav-glider" id="navGlider" aria-hidden="true"></span>
+    <a class="active" href="#hero">Trang chủ</a>
+    <a href="#info">Thông tin</a>
+    <a href="#news">Tin tức</a>
+    <a href="#schools">Cơ sở GDNN</a>
+    <a href="#contact">Liên Hệ</a>
+  </nav>
+  <div class="hdr-right">
+    <div class="user-badge hidden" id="userBadge"><span id="userName"></span></div>
+    <button class="btn-logout hidden" id="logoutBtn" type="button" aria-label="Đăng xuất" title="Đăng xuất">↪</button>
+    <button class="btn-login" id="loginBtn" onclick="showLogin()">Đăng nhập</button>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="hero">
+  <div class="hero-left">
+    <div class="hero-students">
+      <span class="stu s1">👩‍🎓</span><span class="stu s2">🧑‍🎓</span>
+      <span class="spark sp1">✨</span><span class="spark sp2">🎯</span><span class="spark sp3">📚</span>
+    </div>
+    <h1 class="hero-title">HƯỚNG NGHIỆP<br><span class="grad-flow">HỆ 9+</span></h1>
+    <p class="hero-slogan">"Hiểu nghề – Hiểu mình – Chọn hướng đi"</p>
+    <p class="hero-desc">AI đánh giá dựa trên dữ liệu thành tích các trường THPT & trường nghề toàn TP. Đà Nẵng — giúp bạn chọn lối đi đúng nhất 🎯</p>
+    <div class="hero-cta">
+      <button class="btn btn-pink" onclick="openQuiz()">🧠 Trắc nghiệm hướng nghiệp</button>
+      <button class="btn btn-mint" onclick="toggleChat(true)">💬 Hỏi AI</button>
+      <a class="btn btn-blue" href="luyen_de.html">📝 Luyện đề</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="ribbon r1"></div><div class="ribbon r2"></div><div class="ribbon r3"></div><div class="ribbon r4"></div><div class="ribbon r5"></div>
+  </div>
+</section>
+
+<!-- INFO CARDS -->
+<section class="section-full" id="info">
+  <h2 class="sec-title">📋 Thông tin nhanh</h2>
+  <div class="quick-tabs" role="group" aria-label="Danh mục hướng nghiệp">
+    <button class="quick-tab q-blue" data-target="tuyensinh"><i>🎓</i> Tuyển sinh Hệ 9+</button>
+    <button class="quick-tab q-pink" data-target="he9"><i>📖</i> Hệ 9+</button>
+    <button class="quick-tab q-green" data-target="gdnn"><i>🏫</i> Cơ sở GDNN</button>
+    <button class="quick-tab q-yellow" data-target="nganhnghe"><i>⚙️</i> Ngành nghề đào tạo</button>
+    <button class="quick-tab q-purple" data-target="hoatdong"><i>👥</i> Hoạt động hướng nghiệp</button>
+  </div>
+  <div class="info-grid">
+    <article class="info-card liquid-glass" id="he9"><div class="info-img info-photo photo-he9">🎓<span>HỆ 9+</span></div><div class="info-body"><h3>Hệ 9+: Học văn hóa kết hợp học nghề</h3><p>Mô hình vừa học văn hóa vừa học nghề từ lớp 10, mở rộng lựa chọn sau THCS.</p><a class="info-link" href="#quiz">Tìm hiểu lộ trình ↗</a></div></article>
+    <article class="info-card liquid-glass" id="tuyensinh"><div class="info-img info-photo photo-enrollment">🧑‍🎓<span>TUYỂN SINH HỆ 9+</span></div><div class="info-body"><h3>Thông tin tuyển sinh Hệ 9+</h3><p>Tìm hiểu điều kiện, hồ sơ và thời gian tuyển sinh tại Đà Nẵng.</p><a class="info-link" href="#schools">Tra cứu cơ sở ↗</a></div></article>
+    <article class="info-card liquid-glass" id="gdnn"><div class="info-img info-photo photo-school">🏫<span>CƠ SỞ GDNN</span></div><div class="info-body"><h3>Cơ sở GDNN sau THCS</h3><p>Danh sách trường nghề, trung cấp, cao đẳng trên địa bàn.</p><a class="info-link" href="#schools">Xem danh sách ↗</a></div></article>
+    <article class="info-card liquid-glass" id="nganhnghe"><div class="info-img info-photo photo-career">⚙️<span>NGÀNH NGHỀ</span></div><div class="info-body"><h3>Ngành nghề đào tạo</h3><p>Khám phá nhóm ngành kỹ thuật, công nghệ, dịch vụ và sáng tạo.</p><a class="info-link" href="#chatFab">Hỏi trợ lý AI ↗</a></div></article>
+    <article class="info-card liquid-glass" id="hoatdong"><div class="info-img info-photo photo-activity">👥<span>TRẢI NGHIỆM HƯỚNG NGHIỆP</span></div><div class="info-body"><h3>Hoạt động hướng nghiệp</h3><p>Tham quan, trải nghiệm và giao lưu tại các cơ sở đào tạo nghề.</p><a class="info-link" href="#contact">Liên hệ tư vấn ↗</a></div></article>
+    <article class="info-card liquid-glass" id="tailieu"><div class="info-img info-photo photo-library">📚<span>KHO HỌC LIỆU</span></div><div class="info-body"><h3>Tài liệu và luyện đề</h3><p>Ôn tập Toán, Anh, Văn và tham khảo tài liệu hướng nghiệp.</p><a class="info-link" href="luyen_de.html">Mở kho luyện đề ↗</a></div></article>
+  </div>
+</section>
+
+<!-- NEWS -->
+<section class="section-full" id="news">
+  <h2 class="sec-title">📰 Tin tức & Thông tin BGD</h2>
+  <div class="news-grid" id="newsGrid"></div>
+</section>
+
+<!-- QUIZ -->
+<section class="section-full" id="quiz">
+  <h2 class="sec-title">🧠 Trắc nghiệm để AI hiểu bạn hơn</h2>
+  <div class="quiz-container liquid-glass">
+    <div class="quiz-q" id="quizQ"></div>
+    <div class="quiz-opts" id="quizOpts"></div>
+    <div class="quiz-short"><label>✍️ Trả lời ngắn (tùy chọn):</label><textarea id="quizAnswer" rows="2" placeholder="VD: Mình thích vẽ, nấu ăn..."></textarea></div>
+    <div class="quiz-nav">
+      <button class="btn btn-mint" onclick="quizNav(-1)">← Trước</button>
+      <span id="quizProgress">1/5</span>
+      <button class="btn btn-pink" onclick="quizNav(1)">Tiếp →</button>
+    </div>
+  </div>
+</section>
+
+<!-- SCHOOLS -->
+<section class="section-full" id="schools">
+  <h2 class="sec-title">🏫 Dữ liệu điểm chuẩn các trường công lập Đà Nẵng (niên khoá 2026 - 2027)</h2>
+  <div class="toolbar-row">
+    <input class="input-light" id="searchSchool" placeholder="🔍 Tìm trường nhanh...">
+    <div class="chips" id="typeChips">
+      <button class="chip active" data-t="all">Tất cả</button>
+      <button class="chip" data-t="THPT">THPT</button>
+      <button class="chip" data-t="Nghề">Nghề</button>
+      <button class="chip" data-t="9+">9+</button>
+      <button class="chip" data-t="GDTX">GDTX</button>
+    </div>
+  </div>
+  <div class="table-card liquid-glass">
+    <table id="schoolTable"><thead><tr><th>Trường</th><th>Loại</th><th>Điểm chuẩn</th><th>Tốt nghiệp</th><th>Chất lượng</th></tr></thead><tbody></tbody></table>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card liquid-glass"><b id="cSchools">0</b><span>Trường</span></div>
+    <div class="stat-card liquid-glass"><b id="cStudents">0</b><span>Học sinh</span></div>
+    <div class="stat-card liquid-glass"><b id="cAvg">0%</b><span>TB tốt nghiệp</span></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="foot" id="contact">
+  <div class="foot-grid">
+    <div class="foot-col"><h4>🌉 THCS Huỳnh Thúc Kháng </h4><p>Số 154, Đường Hà Huy Tập, Phường An Khê, TP. Đà Nẵng</p><p>📧 huongnghiep@danang.edu.vn</p><p>📞 0236.3821.000</p></div>
+    <div class="foot-col"><h4>Liên kết nhanh</h4><a href="index.html">Trang chủ</a><a href="luyen_de.html">Luyện đề thi</a><a href="https://moet.gov.vn" target="_blank">Bộ GD&ĐT ↗</a><a href="https://danang.gov.vn" target="_blank">Cổng TT Đà Nẵng ↗</a></div>
+    <div class="foot-col"><h4>Giờ hỗ trợ</h4><p>Thứ 2 – Thứ 6: 7:30 – 17:00</p><p>Thứ 7: 8:00 – 11:30</p><p>Chủ nhật: Nghỉ</p></div>
+  </div>
+  <div class="foot-bottom">© 2025 Hướng Nghiệp Huỳnh Thúc Kháng · Xây dựng bằng 💖 cho học sinh</div>
+</footer>
+
+<!-- CHAT -->
+<div class="chat-fab" id="chatFab"><span>🐰</span><i class="ping"></i></div>
+<div class="chat-box liquid-glass" id="chatBox">
+  <header>🐰 Sen Trắng <small>siu cấp cute</small><button onclick="toggleChat(false)">–</button></header>
+  <div class="chat-log" id="chatLog"></div>
+  <form id="chatForm"><input id="chatInput" placeholder="Nhắn gọn thôi nha~" autocomplete="off"><button>➤</button></form>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>

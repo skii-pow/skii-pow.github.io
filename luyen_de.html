@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Phòng luyện đề · Hướng nghiệp Hệ 9+</title>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body data-page="practice">
+<div class="liquid-bg" aria-hidden="true"><div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div></div>
+
+<div class="login-overlay hidden" id="loginOverlay" role="dialog" aria-modal="true" aria-labelledby="authTitle">
+  <div class="login-card liquid-glass">
+    <button class="modal-x" id="closeLogin" type="button" aria-label="Đóng">✕</button>
+    <div class="login-avatar">🎓</div>
+    <h2 id="authTitle">Chào mừng bạn trở lại</h2>
+    <p class="login-sub">Đăng nhập để lưu lại hành trình hướng nghiệp.</p>
+    <form id="loginForm" class="reg-form">
+      <input id="loginEmail" name="email" type="email" placeholder="Email" autocomplete="email" required>
+      <input id="loginPass" name="password" type="password" placeholder="Mật khẩu" autocomplete="current-password" required>
+      <p class="login-error" id="loginError" role="status" aria-live="polite"></p>
+      <button type="submit" class="btn-submit">Đăng nhập</button>
+    </form>
+    <form id="regForm" class="reg-form hidden">
+      <input id="regName" name="name" placeholder="Họ và tên" autocomplete="name" maxlength="80" required>
+      <input id="regEmail" name="email" type="email" placeholder="Email" autocomplete="email" required>
+      <input id="regPhone" name="phone" type="tel" placeholder="Số điện thoại (không bắt buộc)" autocomplete="tel" maxlength="20">
+      <input id="regPass" name="password" type="password" placeholder="Mật khẩu (ít nhất 8 ký tự)" autocomplete="new-password" minlength="8" required>
+      <input id="regPass2" name="passwordConfirm" type="password" placeholder="Nhập lại mật khẩu" autocomplete="new-password" minlength="8" required>
+      <p class="login-error" id="regError" role="status" aria-live="polite"></p>
+      <button type="submit" class="btn-submit">Tạo tài khoản</button>
+    </form>
+    <p class="auth-switch"><span id="authSwitchText">Chưa có tài khoản?</span> <button id="authSwitch" type="button">Đăng ký</button></p>
+  </div>
+</div>
+
+<header class="hdr liquid-glass practice-header" id="top">
+  <button class="hdr-menu" id="mobileNavToggle" type="button" aria-label="Mở menu" aria-expanded="false" aria-controls="siteNav">☰</button>
+  <a class="hdr-left practice-brand" href="index.html#hero">
+    <span class="hdr-logo">🌉</span>
+    <span class="hdr-brand"><b>Trường THCS Huỳnh Thúc Kháng</b><small>Hướng nghiệp – Kiến tạo tương lai</small></span>
+  </a>
+  <nav class="hdr-nav" id="siteNav" aria-label="Điều hướng chính">
+    <span class="nav-glider" id="navGlider" aria-hidden="true"></span>
+    <a href="index.html#hero">Trang chủ</a>
+    <a class="active" href="index.html#info">Thông tin</a>
+    <a href="index.html#news">Tin tức</a>
+    <a href="index.html#schools">Cơ sở GDNN</a>
+    <a href="index.html#contact">Liên Hệ</a>
+  </nav>
+  <div class="hdr-right">
+    <div class="user-badge hidden" id="userBadge"><span id="userName"></span></div>
+    <button class="btn-logout hidden" id="logoutBtn" type="button" aria-label="Đăng xuất" title="Đăng xuất">↪</button>
+    <button class="btn-login" id="loginBtn" type="button">Đăng nhập</button>
+  </div>
+</header>
+
+<main class="practice-page">
+  <section class="practice-hero">
+    <div class="practice-hero-copy">
+      <p class="practice-eyebrow">THCS HUỲNH THÚC KHÁNG <span>•</span> HỆ 9+</p>
+      <h1>Phòng luyện đề</h1>
+      <p class="practice-lead">Vững kiến thức hôm nay, tự tin chọn hướng ngày mai.</p>
+      <div class="practice-stats"><span><b>04</b> môn học</span><i></i><span><b>05</b> câu mỗi lượt</span><i></i><span><b>Lớp 9</b> ôn tập</span></div>
+    </div>
+    <div class="practice-hero-art" role="img" aria-label="Học sinh cùng ôn tập trong thư viện"></div>
+  </section>
+
+  <div class="practice-layout">
+    <section class="practice-panel quiz-panel" aria-labelledby="quizTitle">
+      <div class="practice-panel-head">
+        <div class="panel-icon">✦</div>
+        <div><p class="panel-kicker">LUYỆN TẬP CÁ NHÂN</p><h2 id="quizTitle">Đề luyện tập AI</h2></div>
+      </div>
+      <div class="subject-grid" id="subjectGrid" aria-label="Chọn môn học">
+        <button class="subject-card" data-sub="Toán" type="button"><i>π</i><span>Toán</span><small>Tư duy logic</small></button>
+        <button class="subject-card" data-sub="Tiếng Anh" type="button"><i>Aa</i><span>Tiếng Anh</span><small>Ngôn ngữ</small></button>
+        <button class="subject-card" data-sub="KHTN" type="button"><i>⚗</i><span>KHTN</span><small>Khám phá khoa học</small></button>
+        <button class="subject-card" data-sub="Ngữ Văn" type="button"><i>文</i><span>Ngữ Văn</span><small>Đọc hiểu & diễn đạt</small></button>
+      </div>
+      <div class="quiz-container hidden" id="aiQuizBox" aria-live="polite">
+        <div class="quiz-result-head"><span class="quiz-subject-label" id="quizSubjectLabel"></span><span class="quiz-count-label" id="quizCountLabel"></span></div>
+        <div id="aiQuizContent"></div>
+        <div class="quiz-actions"><button class="btn btn-blue" id="aiQuizCheck" type="button">Chấm bài</button><button class="btn btn-quiet" id="aiQuizRetry" type="button">Đề khác ↻</button></div>
+        <p id="aiQuizResult" role="status" aria-live="polite"></p>
+      </div>
+      <p class="practice-status" id="practiceStatus" role="status" aria-live="polite">Chọn một môn để bắt đầu.</p>
+    </section>
+
+    <section class="practice-panel resource-panel" aria-labelledby="resourceTitle">
+      <div class="practice-panel-head">
+        <div class="panel-icon panel-icon-book">▤</div>
+        <div><p class="panel-kicker">NGUỒN THAM KHẢO</p><h2 id="resourceTitle">Cổng tài liệu</h2></div>
+      </div>
+      <div class="exam-tabs" role="tablist" aria-label="Chọn môn xem tài liệu">
+        <button class="chip active" id="examMath" type="button" role="tab" aria-selected="true" data-exam="math">Toán</button>
+        <button class="chip" id="examEng" type="button" role="tab" aria-selected="false" data-exam="eng">Tiếng Anh</button>
+        <button class="chip" id="examLit" type="button" role="tab" aria-selected="false" data-exam="lit">Ngữ Văn</button>
+      </div>
+      <div class="exam-list" id="examList" role="tabpanel" aria-live="polite"></div>
+      <div class="resource-note"><span>↗</span><p>Tài liệu tuyển sinh và cấu trúc đề có thể thay đổi theo từng năm học. Hãy đối chiếu thông báo mới nhất từ cơ quan giáo dục.</p></div>
+    </section>
+  </div>
+
+  <section class="practice-footer-band">
+    <div><span class="footer-band-icon">◎</span><div><b>Chọn đúng hướng đi</b><small>Thông tin hướng nghiệp và cơ sở đào tạo tại Đà Nẵng</small></div></div>
+    <a href="index.html#schools">Khám phá cơ sở GDNN <span>→</span></a>
+  </section>
+</main>
+
+<div class="toast" id="toast"></div>
+<script src="script.js"></script>
+</body>
+</html>
