@@ -130,7 +130,11 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--in
 .chip{background:rgba(243,238,255,.9);border:1.5px solid rgba(160,120,255,.15);border-radius:99px;padding:8px 16px;cursor:pointer;font-size:.8rem;font-family:inherit;font-weight:600;transition:.22s}
 .chip:hover{transform:translateY(-2px)}
 .chip.active{background:linear-gradient(135deg,#ff6eb422,#a78bfa22);border-color:var(--pink)}
-.table-card{padding:20px;overflow:auto}
+.table-card{max-height:min(62vh,560px);padding:0;overflow:auto;overscroll-behavior:contain}
+.table-card::after{display:none}
+#schoolTable{min-width:720px;margin:0}
+#schoolTable thead th{position:sticky;top:0;z-index:2;background:#eff7fc;color:#285b81}
+@media(max-width:560px){.table-card{max-height:56vh;min-height:220px}}
 table{width:100%;border-collapse:collapse;font-size:.88rem}
 th{text-align:left;padding:12px 14px;color:var(--purple);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;border-bottom:2px solid rgba(160,120,255,.12)}
 td{padding:12px 14px;border-bottom:1px solid rgba(160,120,255,.06)}
