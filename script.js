@@ -229,6 +229,20 @@ function bindUI(){
     const target=document.getElementById(button.dataset.target);if(target)target.scrollIntoView({behavior:'smooth',block:'center'});
     const link=navLinks.find(item=>item.getAttribute('href')==='#'+button.dataset.target);if(link)setActiveNav(link);
   }));
+  const preview=$('#linkPreview'),previewFrame=$('#previewFrame'),previewTitle=$('#linkPreviewTitle'),previewNewTab=$('#previewNewTab');
+  const closePreview=()=>{
+    if(!preview?.open||preview.classList.contains('is-closing'))return;
+    preview.classList.add('is-closing');
+    window.setTimeout(()=>{preview.classList.remove('is-closing');preview.close();},180);
+  };
+  $$('.info-link[data-preview-title]').forEach(link=>link.addEventListener('click',event=>{
+    event.preventDefault();if(!preview||!previewFrame||!previewTitle||!previewNewTab)return;
+    preview.classList.remove('is-closing');previewTitle.textContent=link.dataset.previewTitle;previewNewTab.href=link.href;previewFrame.src=link.href;preview.showModal();$('#closePreview')?.focus();
+  }));
+  $('#closePreview')?.addEventListener('click',closePreview);
+  preview?.addEventListener('click',event=>{if(event.target===preview)closePreview();});
+  preview?.addEventListener('cancel',event=>{event.preventDefault();closePreview();});
+  preview?.addEventListener('close',()=>{if(previewFrame)previewFrame.src='about:blank';});
   const fab=$('#chatFab');if(fab){fab.onclick=()=>toggleChat();fab.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggleChat();}};}
   const cf=$('#chatForm');if(cf)cf.addEventListener('submit',e=>{e.preventDefault();const i=$('#chatInput');const m=i.value.trim();if(!m)return;i.value='';sendChat(m);});
   $('#loginBtn')?.addEventListener('click',()=>showLogin('login'));
@@ -238,7 +252,7 @@ function bindUI(){
   const reg=$('#regForm');if(reg)reg.addEventListener('submit',e=>{e.preventDefault();submitAuth(reg,'/auth/register','#regError');});
   $('#logoutBtn')?.addEventListener('click',async()=>{await api('/auth/logout',{method:'POST'});user=null;$('#userBadge')?.classList.add('hidden');$('#logoutBtn')?.classList.add('hidden');$('#loginBtn')?.classList.remove('hidden');toast('Bạn đã đăng xuất.');});
   $('#loginOverlay')?.addEventListener('click',e=>{if(e.target.id==='loginOverlay')e.currentTarget.classList.add('hidden');});
-  document.addEventListener('keydown',e=>{if(e.key==='Escape'){$$('.overlay').forEach(overlay=>overlay.classList.remove('open'));$('#loginOverlay')?.classList.add('hidden');}});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(preview?.open){e.preventDefault();closePreview();return;}$$('.overlay').forEach(overlay=>overlay.classList.remove('open'));$('#loginOverlay')?.classList.add('hidden');}});
 }
 
 /* INIT */
