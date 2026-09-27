@@ -4,7 +4,6 @@
     {"id":2,"name":"THPT Hòa Vang","type":"THPT","diemChuan":33.75,"totNghiep":96,"chatLuong":91},
     {"id":3,"name":"THPT Hoàng Hoa Thám","type":"THPT","diemChuan":33.25,"totNghiep":95,"chatLuong":88},
     {"id":4,"name":"THPT Trần Phú","type":"THPT","diemChuan":31.75,"totNghiep":97,"chatLuong":93},
-    {"id":5,"name":"THPT Lê Quý Đôn (Đà Nẵng)","type":"THPT","diemChuan":31.5,"totNghiep":96,"chatLuong":92},
     {"id":6,"name":"THPT Nguyễn Khuyến (Cơ sở 2)","type":"THPT","diemChuan":32.5,"totNghiep":95,"chatLuong":90},
     {"id":7,"name":"THPT Thái Phiên","type":"THPT","diemChuan":31.0,"totNghiep":94,"chatLuong":86},
     {"id":8,"name":"THPT Trần Cao Vân","type":"THPT","diemChuan":29.5,"totNghiep":94,"chatLuong":88},
@@ -23,7 +22,6 @@
     {"id":21,"name":"THPT Phan Thành Tài","type":"THPT","diemChuan":22.5,"totNghiep":90,"chatLuong":79},
     {"id":22,"name":"THPT Hồ Nghinh","type":"THPT","diemChuan":22.5,"totNghiep":91,"chatLuong":80},
     {"id":23,"name":"THPT Võ Chí Công","type":"THPT","diemChuan":21.75,"totNghiep":89,"chatLuong":78},
-    {"id":24,"name":"THPT Lê Quý Đôn","type":"THPT","diemChuan":21.75,"totNghiep":90,"chatLuong":80},
     {"id":25,"name":"THPT Ông Ích Khiêm","type":"THPT","diemChuan":20.75,"totNghiep":89,"chatLuong":77},
     {"id":26,"name":"THPT Tôn Thất Tùng","type":"THPT","diemChuan":20.75,"totNghiep":93,"chatLuong":84},
     {"id":27,"name":"THPT Trần Hưng Đạo","type":"THPT","diemChuan":20.25,"totNghiep":90,"chatLuong":81},
@@ -74,16 +72,7 @@
     {"id":72,"name":"THPT Tiểu La","type":"THPT","diemChuan":8.0,"totNghiep":83,"chatLuong":66},
     {"id":73,"name":"THPT Nam Trà My","type":"THPT","diemChuan":7.75,"totNghiep":80,"chatLuong":60},
     {"id":74,"name":"THPT Nguyễn Dục","type":"THPT","diemChuan":7.5,"totNghiep":81,"chatLuong":62}
-  ],
-
-  "students": [
-    {"id":1,"name":"Nguyễn Thảo Vy","class":"9/1","math":9.4,"lit":8.8,"eng":9.2,"gpa":9.1,"interest":"CNTT","quiz":null},
-    {"id":2,"name":"Trần Minh Khang","class":"9/2","math":8.2,"lit":7.6,"eng":8.1,"gpa":8.0,"interest":"Cơ khí","quiz":null},
-    {"id":3,"name":"Lê Thị Bảo Trâm","class":"9/1","math":7.0,"lit":7.8,"eng":6.9,"gpa":7.2,"interest":"Du lịch","quiz":null},
-    {"id":4,"name":"Võ Gia Huy","class":"9/3","math":6.2,"lit":5.9,"eng":6.1,"gpa":6.1,"interest":"Ẩm thực","quiz":null},
-    {"id":5,"name":"Đặng Ngọc Linh","class":"9/2","math":5.1,"lit":5.8,"eng":5.0,"gpa":5.3,"interest":"Thiết kế","quiz":null},
-    {"id":6,"name":"Phạm Quốc Bảo","class":"9/3","math":4.5,"lit":4.8,"eng":4.4,"gpa":4.6,"interest":"Ô tô","quiz":null}
-  ],
+],
   "articles": [
     {"id":1,"title":"Điểm chuẩn lớp 10 Đà Nẵng 2025-2026","src":"https://danang.gov.vn","preview":"Sở GD&ĐT công bố điểm chuẩn tuyển sinh lớp 10 các trường THPT công lập..."},
     {"id":2,"title":"Quy chế tuyển sinh THPT 2026 - BGD","src":"https://moet.gov.vn","preview":"Bộ GD&ĐT ban hành quy chế mới về tuyển sinh THPT, bổ sung phương thức xét tuyển..."},

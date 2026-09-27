@@ -6,7 +6,7 @@ let DATA=null,schoolFilter='all',user=null;
 const FALLBACK={schools:[{id:1,name:"THPT Phan Chu Trinh",type:"THPT",diemChuan:35.5,totNghiep:98,chatLuong:95},{id:2,name:"THPT Trần Phú",type:"THPT",diemChuan:33,totNghiep:97,chatLuong:93},{id:3,name:"THPT Lê Quý Đôn",type:"THPT",diemChuan:31.5,totNghiep:96,chatLuong:92},{id:4,name:"THPT Hoàng Hoa Thám",type:"THPT",diemChuan:29,totNghiep:95,chatLuong:88},{id:5,name:"THPT Ngũ Hành Sơn",type:"THPT",diemChuan:26.5,totNghiep:94,chatLuong:85},{id:6,name:"THPT Tôn Thất Tùng",type:"THPT",diemChuan:25,totNghiep:93,chatLuong:84},{id:7,name:"THPT Thái Phiên",type:"THPT",diemChuan:27.5,totNghiep:94,chatLuong:86},{id:8,name:"CĐ Công nghệ Việt-Hàn",type:"Nghề",diemChuan:18,totNghiep:92,chatLuong:90},{id:9,name:"CĐ CN & KT miền Trung",type:"9+",diemChuan:12,totNghiep:89,chatLuong:85},{id:10,name:"TT GDTX số 1 Đà Nẵng",type:"GDTX",diemChuan:10,totNghiep:88,chatLuong:80}],students:[],articles:[{id:1,title:"Điểm chuẩn lớp 10 Đà Nẵng 2025-2026",src:"https://danang.gov.vn",preview:"Sở GD&ĐT công bố điểm chuẩn tuyển sinh lớp 10 các trường THPT công lập trên địa bàn thành phố..."},{id:2,title:"Quy chế tuyển sinh THPT 2026 – BGD",src:"https://moet.gov.vn",preview:"Bộ GD&ĐT ban hành quy chế mới về tuyển sinh THPT, bổ sung phương thức xét tuyển kết hợp..."},{id:3,title:"Đà Nẵng: 98.2% HS tốt nghiệp THCS",src:"https://danang.gov.vn",preview:"Năm học 2024-2025, tỷ lệ tốt nghiệp THCS đạt 98.2%, tăng 0.5% so với năm trước..."},{id:4,title:"Hệ 9+: Lộ trình mới cho HS Đà Nẵng",src:"https://tuyensinh.edu.vn",preview:"Mô hình 9+ giúp học sinh vừa học văn hóa vừa học nghề từ lớp 10, tiết kiệm thời gian..."},{id:5,title:"Hướng nghiệp sớm: Chìa khóa thành công",src:"https://giaoducthoidai.vn",preview:"Các chuyên gia giáo dục nhấn mạnh tầm quan trọng của việc hướng nghiệp từ lớp 8, lớp 9..."}]};
 
 async function api(p,o){try{const r=await fetch('/api'+p,Object.assign({headers:{'Content-Type':'application/json'},credentials:'same-origin'},o));const data=await r.json().catch(()=>null);return r.ok?data:{error:data&&data.error?data.error:'Yêu cầu chưa thực hiện được.'};}catch(e){return null;}}
-async function loadData(){let d=await api('/data');if(!d||!Array.isArray(d.schools)){try{const r=await fetch(`data.json?v=${Date.now()}`,{cache:'no-store'});if(r.ok)d=await r.json();}catch(e){}}DATA=(d&&Array.isArray(d.schools))?d:JSON.parse(JSON.stringify(FALLBACK));}
+async function loadData(){let d=await api('/data');if(!d||!Array.isArray(d.schools)){try{const r=await fetch(`data.json?v=${Date.now()}`,{cache:'no-store'});if(r.ok)d=await r.json();}catch(e){}}DATA=(d&&Array.isArray(d.schools))?d:JSON.parse(JSON.stringify(FALLBACK));DATA.schools=DATA.schools.filter(s=>s.name!=='THPT Lê Quý Đôn');}
 
 /* LOGIN */
 let authMode='login';
@@ -51,7 +51,29 @@ window.quizNav=function(dir){quizIdx+=dir;if(quizIdx<0)quizIdx=0;if(quizIdx>=QUI
 function submitQuiz(){const short=$('#quizAnswer')?$('#quizAnswer').value:'';localStorage.setItem('hn_quiz',JSON.stringify({answers:quizAnswers,short}));toast('Đã lưu trắc nghiệm! AI sẽ dùng để gợi ý nghề~ 🎯');}
 
 /* SCHOOLS */
-function renderSchools(){const tb=$('#schoolTable');if(!tb)return;const q=(($('#searchSchool')||{}).value||'').toLowerCase();const rows=DATA.schools.filter(s=>(schoolFilter==='all'||s.type===schoolFilter)&&s.name.toLowerCase().includes(q));tb.querySelector('tbody').innerHTML=rows.map(s=>`<tr><td><b>${s.name}</b></td><td><span class="badge b-${{'THPT':'blue','Nghề':'pink','9+':'orange','GDTX':'green'}[s.type]||'blue'}">${s.type}</span></td><td>${s.diemChuan}</td><td>${s.totNghiep}%</td><td>${s.chatLuong}%</td></tr>`).join('')||'<tr><td colspan="5" style="text-align:center;opacity:.5;padding:20px">Không tìm thấy~</td></tr>';renderStats(rows);}
+function renderSchools(){const tb=$('#schoolTable');if(!tb)return;const q=normalizeSearchText((($('#searchSchool')||{}).value||''));const rows=DATA.schools.filter(s=>(schoolFilter==='all'||s.type===schoolFilter)&&normalizeSearchText(s.name).includes(q));tb.querySelector('tbody').innerHTML=rows.map(s=>`<tr><td><b>${s.name}</b></td><td><span class="badge b-${{'THPT':'blue','Nghề':'pink','9+':'orange','GDTX':'green'}[s.type]||'blue'}">${s.type}</span></td><td>${s.diemChuan}</td><td>${s.totNghiep}%</td><td>${s.chatLuong}%</td></tr>`).join('')||'<tr><td colspan="5" style="text-align:center;opacity:.5;padding:20px">Không tìm thấy~</td></tr>';renderStats(rows);}
+function normalizeSearchText(value){return String(value||'').normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLocaleLowerCase('vi').replace(/đ/g,'d').trim();}
+function scrollToPageTarget(target,hash){
+  if(!target)return;
+  const headerHeight=$('.hdr')?.getBoundingClientRect().height||0;
+  const top=target.getBoundingClientRect().top+window.scrollY-headerHeight-12;
+  window.scrollTo({top:Math.max(0,top),behavior:'smooth'});
+  history.replaceState(null,'',location.pathname+location.search+(hash||''));
+}
+function searchPage(query){
+  const term=normalizeSearchText(query);if(!term)return;
+  history.replaceState(null,'',location.pathname+location.search);
+  const schoolMatches=DATA.schools.filter(s=>normalizeSearchText(s.name).includes(term));
+  if(schoolMatches.length){
+    schoolFilter='all';$$('#typeChips .chip').forEach(chip=>chip.classList.toggle('active',chip.dataset.t==='all'));
+    $('#searchSchool').value=query;renderSchools();scrollToPageTarget($('#schools'),'#schools');return;
+  }
+  schoolFilter='all';$$('#typeChips .chip').forEach(chip=>chip.classList.toggle('active',chip.dataset.t==='all'));
+  const schoolSearch=$('#searchSchool');if(schoolSearch){schoolSearch.value='';renderSchools();}
+  const candidates=[...$$('#info .info-card'),...$$('#newsGrid .news-card'),...$$('.section-full, .library-banner, .foot')];
+  const match=candidates.find(item=>normalizeSearchText(`${item.innerText} ${[...item.querySelectorAll('img')].map(image=>image.alt).join(' ')}`).includes(term));
+  if(match){const section=match.closest('.section-full')||match;scrollToPageTarget(section,section.id?'#'+section.id:'');}else toast('Không tìm thấy thông tin phù hợp.');
+}
 function renderStats(rows){const list=(rows&&rows.length)?rows:DATA.schools;const avg=Math.round(list.reduce((a,s)=>a+s.totNghiep,0)/list.length);tick($('#cSchools'),list.length);const cStudents=$('#cStudents');if(cStudents)cStudents.textContent='44 274';const ca=$('#cAvg');if(ca)ca.textContent=avg+'%';}
 function tick(el,to){if(!el)return;const t0=performance.now();(function f(){const k=Math.min(1,(performance.now()-t0)/900);el.textContent=Math.round(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f);})();}
 
@@ -163,7 +185,10 @@ function initReveal(){const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.
 
 /* BIND */
 function bindUI(){
+  const header=$('.hdr');
+  if(header){const updateScrollOffset=()=>document.documentElement.style.setProperty('--sticky-header-height',`${Math.ceil(header.getBoundingClientRect().height)}px`);updateScrollOffset();new ResizeObserver(updateScrollOffset).observe(header);}
   const ss=$('#searchSchool');if(ss)ss.addEventListener('input',renderSchools);
+  const siteSearchForm=$('#siteSearchForm');if(siteSearchForm)siteSearchForm.addEventListener('submit',event=>{event.preventDefault();const query=$('#siteSearch').value;if(document.body.dataset.page==='practice'){location.href='index.html?search='+encodeURIComponent(query);return;}if(nav?.classList.contains('mobile-open')){nav.classList.remove('mobile-open');$('#mobileNavToggle')?.setAttribute('aria-expanded','false');$('#mobileNavToggle')?.setAttribute('aria-label','Mở menu');}searchPage(query);});
   const tc=$('#typeChips');if(tc)tc.addEventListener('click',e=>{const c=e.target.closest('.chip');if(!c)return;$$('#typeChips .chip').forEach(x=>x.classList.remove('active'));c.classList.add('active');schoolFilter=c.dataset.t;renderSchools();});
   const nav=$('#siteNav'),glider=$('#navGlider'),navLinks=nav?[...nav.querySelectorAll('a')]:[];
   const localNavLinks=navLinks.filter(link=>{const target=new URL(link.href,location.href);return target.origin===location.origin&&target.pathname===location.pathname&&target.hash;});
@@ -177,9 +202,10 @@ function bindUI(){
   };
   if(navLinks.length){
     const initial=navLinks.find(link=>link.classList.contains('active'))||navLinks[0];
-    navLinks.forEach(link=>link.addEventListener('click',()=>{
+    navLinks.forEach(link=>link.addEventListener('click',event=>{
       setActiveNav(link);
       if(nav.classList.contains('mobile-open')){nav.classList.remove('mobile-open');$('#mobileNavToggle')?.setAttribute('aria-expanded','false');}
+      if(localNavLinks.includes(link)){event.preventDefault();const hash=new URL(link.href,location.href).hash;scrollToPageTarget(document.getElementById(hash.slice(1)),hash);}
     }));
     const resizeObserver=new ResizeObserver(()=>setActiveNav(navLinks.find(link=>link.classList.contains('active'))||initial));
     resizeObserver.observe(nav);
@@ -216,9 +242,9 @@ function bindUI(){
 }
 
 /* INIT */
-document.addEventListener('DOMContentLoaded',async()=>{bindUI();bindPracticeUI();await Promise.all([checkLogin(),loadData()]);renderNews();renderSchools();renderQuizQ();
+document.addEventListener('DOMContentLoaded',async()=>{bindUI();bindPracticeUI();await Promise.all([checkLogin(),loadData()]);renderNews();renderSchools();renderQuizQ();const requestedSearch=new URLSearchParams(location.search).get('search');if(requestedSearch){$('#siteSearch').value=requestedSearch;searchPage(requestedSearch);}else if(location.hash){scrollToPageTarget(document.getElementById(location.hash.slice(1)),location.hash);}
   // Thêm reveal-up cho info cards + sections
-  $$('.info-card,.quiz-container,.table-card,.stat-card,.section-full').forEach(el=>el.classList.add('reveal-up'));
+  $$('.info-card,.quiz-container,.table-card,.stat-card').forEach(el=>el.classList.add('reveal-up'));
   initReveal();
 });
 })();
