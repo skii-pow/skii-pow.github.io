@@ -56,7 +56,7 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--in
 .hero-desc{opacity:.75;font-size:.92rem;margin-bottom:20px;max-width:520px;line-height:1.6}
 .hero-cta{display:flex;gap:10px;flex-wrap:wrap}
 .hero-right{display:flex;flex-direction:column;gap:12px;align-items:flex-end}
-.ribbon{height:38px;border-radius:8px;clip-path:polygon(0 0,92% 0,100% 50%,92% 100%,0 100%,8% 50%);animation:ribbonSlide 4s ease-in-out infinite alternate}
+.ribbon{display:flex;align-items:center;justify-content:center;height:38px;border-radius:8px;color:#fff;font-size:.78rem;font-weight:700;text-align:center;text-shadow:0 1px 2px #173b6170;white-space:nowrap;clip-path:polygon(0 0,92% 0,100% 50%,92% 100%,0 100%,8% 50%);animation:ribbonSlide 4s ease-in-out infinite alternate}
 .r1{width:220px;background:linear-gradient(90deg,var(--blue),var(--purple))}
 .r2{width:190px;background:linear-gradient(90deg,var(--mint),var(--blue));animation-delay:.3s}
 .r3{width:250px;background:linear-gradient(90deg,var(--orange),var(--pink));animation-delay:.6s}
