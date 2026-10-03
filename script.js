@@ -78,20 +78,44 @@ function renderStats(rows){const list=(rows&&rows.length)?rows:DATA.schools;cons
 function tick(el,to){if(!el)return;const t0=performance.now();(function f(){const k=Math.min(1,(performance.now()-t0)/900);el.textContent=Math.round(to*(1-Math.pow(1-k,3)));if(k<1)requestAnimationFrame(f);})();}
 
 /* CHAT */
-function bubble(cls,text){const log=$('#chatLog');if(!log)return null;const d=document.createElement('div');d.className='msg '+cls;d.textContent=text;log.appendChild(d);log.scrollTop=log.scrollHeight;return d;}
+function appendFormattedText(parent,text){
+  String(text).split(/(\*\*[^*]+\*\*)/g).forEach(part=>{
+    if(part.startsWith('**')&&part.endsWith('**')){const strong=document.createElement('strong');strong.textContent=part.slice(2,-2);parent.append(strong);}
+    else parent.append(document.createTextNode(part));
+  });
+}
+function renderAiMessage(element,text){
+  let paragraph=[],list=null,listType='';
+  const flushParagraph=()=>{
+    if(!paragraph.length)return;
+    const block=document.createElement('p');
+    paragraph.forEach((line,index)=>{if(index)block.append(document.createElement('br'));appendFormattedText(block,line);});
+    element.append(block);paragraph=[];
+  };
+  String(text).trim().split(/\r?\n/).forEach(line=>{
+    const ordered=line.match(/^\s*\d+[.)]\s+(.+)$/),unordered=line.match(/^\s*[-*]\s+(.+)$/),item=ordered||unordered;
+    if(!item){if(!line.trim()){flushParagraph();list=null;listType='';}else{list=null;listType='';paragraph.push(line);}return;}
+    flushParagraph();
+    const nextType=ordered?'ol':'ul';
+    if(listType!==nextType){list=document.createElement(nextType);element.append(list);listType=nextType;}
+    const entry=document.createElement('li');appendFormattedText(entry,item[1]);list.append(entry);
+  });
+  flushParagraph();
+}
+function bubble(cls,text){const log=$('#chatLog');if(!log)return null;const d=document.createElement('div');d.className='msg '+cls;if(cls==='ai')renderAiMessage(d,text);else d.textContent=text;log.appendChild(d);log.scrollTop=log.scrollHeight;return d;}
 window.toggleChat=function(open){const b=$('#chatBox');if(!b)return;const w=open!==undefined?open:!b.classList.contains('open');if(w&&!user){window.showLogin('login');return;}b.classList.toggle('open',w);if(w&&!b.querySelector('.msg'))bubble('ai','Chào~ 🐰 Hỏi gọn nhé!');};
 async function sendChat(m){if(!user){window.showLogin('login');return;}bubble('me',m);const typing=bubble('ai','Đang tìm câu trả lời...');const quiz=JSON.parse(localStorage.getItem('hn_quiz')||'null');const res=await api('/ai/chat',{method:'POST',body:JSON.stringify({message:m,quiz})});if(typing)typing.remove();if(res&&res.status===401){user=null;window.showLogin('login');return;}bubble('ai',(res&&res.reply)||(res&&res.error)||'Chưa nhận được phản hồi từ máy chủ AI. Hãy thử lại sau.');}
 
 /* PRACTICE PAGE */
-const EXAM_RESOURCES={
-  math:[{title:'Sở Giáo dục và Đào tạo TP. Đà Nẵng',detail:'Thông báo tuyển sinh và giáo dục địa phương',url:'https://danang.gov.vn/'},{title:'Bộ Giáo dục và Đào tạo',detail:'Chương trình, quy chế và văn bản giáo dục',url:'https://moet.gov.vn/'}],
-  eng:[{title:'Sở Giáo dục và Đào tạo TP. Đà Nẵng',detail:'Thông báo tuyển sinh và giáo dục địa phương',url:'https://danang.gov.vn/'},{title:'Bộ Giáo dục và Đào tạo',detail:'Chương trình, quy chế và văn bản giáo dục',url:'https://moet.gov.vn/'}],
-  lit:[{title:'Sở Giáo dục và Đào tạo TP. Đà Nẵng',detail:'Thông báo tuyển sinh và giáo dục địa phương',url:'https://danang.gov.vn/'},{title:'Bộ Giáo dục và Đào tạo',detail:'Chương trình, quy chế và văn bản giáo dục',url:'https://moet.gov.vn/'}]
-};
+const EXAM_RESOURCES=[
+  {title:'Sở Giáo dục và Đào tạo TP. Đà Nẵng',detail:'Thông báo tuyển sinh và giáo dục địa phương',url:'https://danang.edu.vn/'},
+  {title:'Bộ Giáo dục và Đào tạo',detail:'Chương trình, quy chế và văn bản giáo dục',url:'https://moet.gov.vn/'},
+  {title:'Kho đề trường THCS Huỳnh Thúc Kháng',detail:'Đề ôn tập và tài liệu của trường',url:'https://sites.google.com/view/trng-thcs-hunh-thc-khng/trang-ch%E1%BB%A7'}
+];
 let practiceSubject='',practiceQuestions=[],practiceGraded=false;
-function renderExamResources(subject){
+function renderExamResources(){
   const list=$('#examList');if(!list)return;list.replaceChildren();
-  (EXAM_RESOURCES[subject]||EXAM_RESOURCES.math).forEach(resource=>{
+  EXAM_RESOURCES.forEach(resource=>{
     const item=document.createElement('article');item.className='resource-item';
     const icon=document.createElement('span');icon.className='resource-item-icon';icon.textContent='↗';
     const details=document.createElement('div');details.className='resource-item-copy';
@@ -174,8 +198,8 @@ function bindPracticeUI(){
   const check=$('#aiQuizCheck');if(check)check.addEventListener('click',checkAIQuiz);
   const retry=$('#aiQuizRetry');if(retry)retry.addEventListener('click',()=>{if(practiceSubject)requestPracticeQuiz(practiceSubject);});
   const tabs=$$('.exam-tabs [data-exam]');
-  tabs.forEach(tab=>tab.addEventListener('click',()=>{tabs.forEach(item=>{const selected=item===tab;item.classList.toggle('active',selected);item.setAttribute('aria-selected',String(selected));});renderExamResources(tab.dataset.exam);}));
-  if(tabs.length)renderExamResources(tabs.find(tab=>tab.classList.contains('active'))?.dataset.exam||'math');
+  tabs.forEach(tab=>tab.addEventListener('click',()=>{tabs.forEach(item=>{const selected=item===tab;item.classList.toggle('active',selected);item.setAttribute('aria-selected',String(selected));});renderExamResources();}));
+  if(tabs.length)renderExamResources();
 }
 
 /* TOAST */

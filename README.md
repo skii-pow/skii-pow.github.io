@@ -21,9 +21,12 @@ Tạo API key trong Google AI Studio, sau đó đặt các biến môi trường
 read -s 'GEMINI_API_KEY?Nhap khoa Gemini moi (se khong hien tren man hinh): '
 export GEMINI_API_KEY
 export AI_PROVIDER=gemini
-export GEMINI_MODEL=gemini-2.5-flash
+export GEMINI_MODEL=gemini-3.8-flash
+export GEMINI_FALLBACK_MODEL=gemini-3.5-flash-lite
 PORT=3001 npm start
 ```
+
+Nếu model chính tạm quá tải hoặc chạm giới hạn tốc độ, máy chủ tự thử model dự phòng. Mức suy luận `LOW` và ngân sách token được cấu hình để tránh phản hồi rỗng do hết token.
 
 Nếu có `GEMINI_API_KEY` mà không đặt `AI_PROVIDER`, máy chủ tự chọn Gemini. Có thể đặt `AI_PROVIDER=openai` cùng `AI_API_KEY`, `AI_API_URL` và `AI_MODEL` để dùng endpoint tương thích OpenAI Chat Completions.
 

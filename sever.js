@@ -12,7 +12,9 @@ const scrypt  = promisify(crypto.scrypt);
 
 // 🔑 Đọc key từ .env — KHÔNG ghi cứng trong code
 const GEMINI_KEY = process.env.GEMINI_API_KEY || '';
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent`;
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-3.8-flash';
+const GEMINI_FALLBACK_MODEL = process.env.GEMINI_FALLBACK_MODEL || 'gemini-3.5-flash-lite';
+const geminiUrl = model => `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent`;
 const PORT       = process.env.PORT || 3000;
 const DATA_FILE = path.join(__dirname, 'data.json');
 const PRIVATE_DIR = process.env.AUTH_DATA_DIR || path.join(__dirname, '.private');
@@ -146,13 +148,21 @@ app.delete('/api/students/:id', (req,res)=>{
 });
 
 // ---------- GỌI GEMINI (key CHỈ ở server, hông bao giờ gửi ra browser) ----------
+function aiErrorMessage(error) {
+  if (error.message === 'AI_NOT_CONFIGURED') return 'AI chưa được cấu hình trên máy chủ.';
+  if (error.code === 'GEMINI_AUTH') return 'Khóa Gemini bị từ chối. Hãy cập nhật GEMINI_API_KEY bằng khóa mới từ Google AI Studio trên máy chủ.';
+  if (error.code === 'GEMINI_MODEL') return 'Không tìm thấy model Gemini. Hãy kiểm tra biến GEMINI_MODEL trên máy chủ.';
+  if (error.code === 'GEMINI_RATE_LIMIT') return 'Gemini đang giới hạn lượt gọi. Hãy thử lại sau hoặc kiểm tra hạn mức API.';
+  return 'Gemini chưa kết nối được. Vui lòng thử lại sau.';
+}
+
 async function askGemini(systemPrompt, userMsg, maxTokens=200){
   if (!GEMINI_KEY) {
     const error = new Error('AI_NOT_CONFIGURED');
     error.status = 503;
     throw error;
   }
-  const r = await fetch(GEMINI_URL, {
+  const requestOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -164,18 +174,38 @@ async function askGemini(systemPrompt, userMsg, maxTokens=200){
       }],
       generationConfig: {
         maxOutputTokens: maxTokens,
-        temperature: 0.6
+        temperature: 1,
+        thinkingConfig: { thinkingLevel: 'LOW' }
       }
     })
-  });
+  };
+  let r = await fetch(geminiUrl(GEMINI_MODEL), requestOptions);
+  if ((r.status === 429 || r.status === 503) && GEMINI_FALLBACK_MODEL !== GEMINI_MODEL) {
+    console.warn(`[Gemini] ${GEMINI_MODEL} returned HTTP ${r.status}; retrying ${GEMINI_FALLBACK_MODEL}`);
+    r = await fetch(geminiUrl(GEMINI_FALLBACK_MODEL), requestOptions);
+  }
 
   if (!r.ok) {
-    const errTxt = await r.text().catch(()=>'');
-    throw new Error(`Gemini HTTP ${r.status}: ${errTxt.slice(0,200)}`);
+    const body = await r.json().catch(()=>null);
+    const error = new Error(`Gemini HTTP ${r.status}`);
+    error.status = 502;
+    error.code = r.status === 401 || r.status === 403 ? 'GEMINI_AUTH'
+      : r.status === 404 ? 'GEMINI_MODEL'
+      : r.status === 429 ? 'GEMINI_RATE_LIMIT'
+      : 'GEMINI_UPSTREAM';
+    if (body?.error?.status) error.message += ` (${body.error.status})`;
+    throw error;
   }
 
   const j = await r.json();
-  const text = j.candidates?.[0]?.content?.parts?.[0]?.text || '';
+  const candidate = j.candidates?.[0];
+  const text = candidate?.content?.parts?.map(part => part.text || '').join('') || '';
+  if (!text.trim()) {
+    const error = new Error(`Gemini returned no text (${candidate?.finishReason || j.promptFeedback?.blockReason || 'NO_CANDIDATE'})`);
+    error.status = 502;
+    error.code = candidate?.finishReason === 'MAX_TOKENS' ? 'GEMINI_MAX_TOKENS' : 'GEMINI_EMPTY';
+    throw error;
+  }
   return text.trim();
 }
 
@@ -183,14 +213,14 @@ async function askGemini(systemPrompt, userMsg, maxTokens=200){
 app.post('/api/ai/chat', async (req,res)=>{
   try {
     const reply = await askGemini(
-      'Bạn là "Sen Trắng" – AI hướng nghiệp TP. Đà Nẵng. Trả lời tiếng Việt, TỐI ĐA 2 câu, cực ngắn gọn, thân thiện. Cấm lan man.',
+      'Bạn là "Sen Trắng" – AI hướng nghiệp TP. Đà Nẵng. Trả lời tiếng Việt, thân thiện. Cấm lan man. Không hỏi lại',
       req.body.message || '',
-      80
+      256
     );
     res.json({reply});
   } catch(e){
-    console.error('[AI chat]', e.message);
-    res.status(e.status || 502).json({reply:null, error:e.status === 503 ? 'AI chưa được cấu hình trên máy chủ.' : 'AI chưa kết nối được. Vui lòng thử lại sau.'});
+    console.error('[AI chat]', e.code || e.message);
+    res.status(e.status || 502).json({reply:null, error:aiErrorMessage(e)});
   }
 });
 
@@ -204,14 +234,14 @@ app.post('/api/ai/evaluate', async (req,res)=>{
     const quizStr = quiz ? `\nTrắc nghiệm: ${JSON.stringify(quiz)}` : '';
 
     const reply = await askGemini(
-      'AI hướng nghiệp Đà Nẵng. Trả lời TỐI ĐA 3 câu: (1) nhận xét học lực, (2) gợi ý lộ trình THPT/nghề/9+/GDTX kèm TÊN trường cụ thể, (3) động viên ngắn. Cấm lan man.',
+      'AI hướng nghiệp Đà Nẵng. Trả lời TỐI ĐA 3 câu: (1) nhận xét học lực, (2) gợi ý lộ trình THPT/nghề/9+/GDTX kèm TÊN trường cụ thể, (3) động viên ngắn. Cấm lan man. Không hỏi lại.',
       `Học sinh: ${JSON.stringify(student)}\nTrường: ${brief}${quizStr}`,
-      180
+      512
     );
     res.json({reply});
   } catch(e){
-    console.error('[AI eval]', e.message);
-    res.status(e.status || 502).json({reply:null, error:e.status === 503 ? 'AI chưa được cấu hình trên máy chủ.' : 'AI chưa kết nối được. Vui lòng thử lại sau.'});
+    console.error('[AI eval]', e.code || e.message);
+    res.status(e.status || 502).json({reply:null, error:aiErrorMessage(e)});
   }
 });
 
@@ -220,14 +250,14 @@ app.post('/api/ai/personality', async (req,res)=>{
   try {
     const {answers, shortAnswer} = req.body;
     const reply = await askGemini(
-      'Chuyên viên hướng nghiệp. Dựa câu trả lời trắc nghiệm, nhận xét TỐI ĐA 3 câu: (1) tính cách nổi bật, (2) nhóm nghề phù hợp, (3) gợi ý 1-2 trường cụ thể ở Đà Nẵng. Cấm lan man.',
+      'Chuyên viên hướng nghiệp. Dựa câu trả lời trắc nghiệm, nhận xét TỐI ĐA 3 câu: (1) tính cách nổi bật, (2) nhóm nghề phù hợp, (3) gợi ý 1-2 trường cụ thể ở Đà Nẵng. Cấm lan man. Không hỏi lại.',
       `Câu trả lời: ${JSON.stringify(answers)}\nTrả lời tự do: ${shortAnswer||'không có'}`,
-      180
+      512
     );
     res.json({reply});
   } catch(e){
-    console.error('[AI personality]', e.message);
-    res.status(e.status || 502).json({reply:null, error:e.status === 503 ? 'AI chưa được cấu hình trên máy chủ.' : 'AI chưa kết nối được. Vui lòng thử lại sau.'});
+    console.error('[AI personality]', e.code || e.message);
+    res.status(e.status || 502).json({reply:null, error:aiErrorMessage(e)});
   }
 });
 
@@ -238,12 +268,12 @@ app.post('/api/ai/quiz', async (req,res)=>{
     const reply = await askGemini(
       `Soạn 5 câu trắc nghiệm lớp 9 môn ${subject}. Format JSON array: [{"q":"...","a":"A. ...","b":"B. ...","c":"C. ...","d":"D. ...","correct":"A"}]. CHỈ trả JSON, không giải thích.`,
       `Soạn 5 câu trắc nghiệm ${subject} lớp 9`,
-      800
+      2048
     );
     res.json({reply});
   } catch(e){
-    console.error('[AI quiz]', e.message);
-    res.status(e.status || 502).json({reply:null, error:e.status === 503 ? 'AI chưa được cấu hình trên máy chủ.' : 'AI chưa kết nối được. Vui lòng thử lại sau.'});
+    console.error('[AI quiz]', e.code || e.message);
+    res.status(e.status || 502).json({reply:null, error:aiErrorMessage(e)});
   }
 });
 

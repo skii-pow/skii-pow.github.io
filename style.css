@@ -186,7 +186,10 @@ tbody tr:hover{background:rgba(255,110,180,.05);transform:scale(1.003)}
 .chat-box header small{opacity:.82;font-weight:400;font-size:.7rem}
 .chat-box header button{margin-left:auto;background:none;border:none;cursor:pointer;font-size:1rem}
 .chat-log{padding:12px;display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto}
-.msg{max-width:85%;padding:9px 13px;border-radius:16px;font-size:.84rem;line-height:1.4;animation:msgIn .3s both}
+.msg{max-width:85%;padding:9px 13px;border-radius:16px;font-size:.84rem;line-height:1.45;overflow-wrap:anywhere;animation:msgIn .3s both}
+.msg p{margin:0}.msg p+p{margin-top:.55em}
+.msg ol,.msg ul{margin:.35em 0 .25em;padding-left:1.35em}
+.msg li+li{margin-top:.28em}
 @keyframes msgIn{from{opacity:0;transform:translateY(10px) scale(.9)}to{opacity:1;transform:none}}
 .msg.me{align-self:flex-end;background:linear-gradient(135deg,#1688d1,#075a9e);color:#fff;border-bottom-right-radius:4px}
 .msg.ai{align-self:flex-start;background:#dceeff;color:#174d77;border-bottom-left-radius:4px}
@@ -357,7 +360,7 @@ body[data-page="practice"] .hdr-nav.ready .nav-glider{opacity:1}
 body[data-page="practice"] .hdr-right{margin-left:0}
 body[data-page="practice"] .btn-login{background:#0878d8;border-radius:9px;box-shadow:0 5px 14px #0878d82a}
 .practice-page{width:min(1240px,94vw);margin:0 auto;padding:34px 12px 56px}
-.practice-hero{position:relative;isolation:isolate;display:grid;grid-template-columns:1.25fr .75fr;align-items:center;min-height:245px;margin-bottom:23px;padding:32px 38px;overflow:hidden;border:1px solid #d8e9f5;border-radius:14px;background:#dceeff;box-shadow:0 8px 25px #1c527811;animation:practiceRise .65s both}
+.practice-hero{position:relative;isolation:isolate;display:grid;grid-template-columns:1.25fr .75fr;align-items:center;min-height:245px;margin-bottom:23px;padding:32px 38px;overflow:hidden;border:0;border-radius:0;background:#dceeff;box-shadow:none;animation:practiceRise .65s both}
 .practice-hero::before{position:absolute;z-index:-1;inset:0;background:linear-gradient(90deg,#e6f5ff 0%,#e6f5fff2 43%,#e6f5ff33 100%);content:""}
 .practice-hero-copy{position:relative;z-index:1}
 .practice-eyebrow,.panel-kicker{margin-bottom:8px;color:#4080ab;font-size:.68rem;font-weight:800;letter-spacing:.06em}
@@ -394,10 +397,11 @@ body[data-page="practice"] .btn-login{background:#0878d8;border-radius:9px;box-s
 .quiz-container{margin-top:16px;padding:0;border:0;background:transparent;box-shadow:none}
 .quiz-result-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;padding:10px 12px;border:1px solid #dceaf3;border-radius:8px;background:#f4faff}
 .quiz-subject-label{color:#146da9;font-size:.77rem;font-weight:800}.quiz-count-label{color:#6f879b;font-size:.68rem}
-.practice-question{min-width:0;margin:0 0 12px;padding:12px;border:1px solid #e0eaf2;border-radius:9px;background:white}
-.practice-question legend{display:flex;align-items:flex-start;gap:9px;width:100%;padding:0 0 10px;color:#294d6b;font-size:.79rem;font-weight:700;line-height:1.45}
+.practice-question{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 8px;min-width:0;margin:0 0 12px;padding:12px;border:1px solid #e0eaf2;border-radius:9px;background:white}
+.practice-question legend{display:flex;grid-column:1/-1;align-items:flex-start;gap:9px;width:100%;padding:0 0 10px;color:#294d6b;font-size:.79rem;font-weight:700;line-height:1.45}
 .question-number{display:grid;place-items:center;width:25px;height:25px;flex:none;border-radius:7px;background:#e9f5fc;color:#1974b3;font-size:.67rem}
-.quiz-option{display:flex;width:100%;align-items:center;gap:9px;margin-top:6px;padding:8px 9px;border:1px solid #e7edf2;border-radius:7px;background:#fff;text-align:left;color:#45617a;font:500 .73rem 'Be Vietnam Pro',sans-serif;cursor:pointer;transition:background .18s,border-color .18s,color .18s}
+.quiz-option{display:flex;width:100%;min-width:0;min-height:38px;align-items:center;gap:9px;margin-top:0;padding:8px 9px;border:1px solid #e7edf2;border-radius:7px;background:#fff;text-align:left;color:#45617a;font:500 .73rem 'Be Vietnam Pro',sans-serif;cursor:pointer;transition:background .18s,border-color .18s,color .18s}
+.quiz-option>span:last-child{min-width:0;overflow-wrap:anywhere}
 .quiz-option:hover:not(:disabled){border-color:#9ecbe7;background:#f4faff}
 .option-letter{display:grid;place-items:center;width:23px;height:23px;flex:none;border:1px solid #dae6ee;border-radius:6px;color:#577189;font-size:.64rem;font-weight:800}
 .quiz-option.is-selected{border-color:#5ca9dc;background:#eef8ff;color:#174f79}
