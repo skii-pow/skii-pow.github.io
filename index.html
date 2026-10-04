@@ -2,7 +2,7 @@
 <html lang="vi">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title> Nền tảng hướng nghiệp hệ 9+ 🌉 – Hiểu nghề, Hiểu mình</title>
+<title> Nền tảng hướng nghiệp hệ 9+ 🌉 </title>
 <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 </head>
@@ -41,7 +41,7 @@
   <button class="hdr-menu" id="mobileNavToggle" type="button" aria-label="Mở menu" aria-expanded="false" aria-controls="siteNav">☰</button>
   <div class="hdr-left">
     <img class="hdr-logo" src="12.jpeg" alt="">
-    <div class="hdr-brand"><b>Trường THCS Huỳnh Thúc Kháng</b><small>Hướng nghiệp – Kiến tạo tương lai</small></div>
+    <div class="hdr-brand"><b>Trường THCS Huỳnh Thúc Kháng</b><small>Tìm hiểu – Khám phá – Trải nghiệm</small></div>
   </div>
   <nav class="hdr-nav" id="siteNav" aria-label="Điều hướng chính">
     <span class="nav-glider" id="navGlider" aria-hidden="true"></span>
@@ -70,8 +70,8 @@
       <span class="spark sp1">✨</span><span class="spark sp2">🎯</span><span class="spark sp3">📚</span>
     </div>
     <h1 class="hero-title">HƯỚNG NGHIỆP<br><span class="grad-flow">HỆ 9+</span></h1>
-    <p class="hero-slogan">"Hiểu nghề – Hiểu mình – Chọn đúng hướng"</p>
-    <p class="hero-desc">Hệ thống hướng nghiệp giúp bạn học chọn đúng ngành nghề phù hợp với năng lực và sở thích của mình 🎯</p>
+    <p class="hero-slogan">"Hiểu nghề – Hiểu mình - Chọn đúng hướng"</p>
+    <p class="hero-desc"><i>Nền tảng hỗ trợ hướng nghiệp giúp bạn học chọn đúng ngành nghề phù hợp với năng lực và sở thích của mình 🎯</i></p>
     <div class="hero-cta">
       <button class="btn btn-pink" onclick="openQuiz()">🧠 Trắc nghiệm hướng nghiệp</button>
       <button class="btn btn-mint" onclick="toggleChat(true)">💬 Hỏi AI</button>
@@ -115,12 +115,18 @@
   <div class="quiz-container liquid-glass">
     <div class="quiz-q" id="quizQ"></div>
     <div class="quiz-opts" id="quizOpts"></div>
-    <div class="quiz-short"><label>✍️ Trả lời ngắn (tùy chọn):</label><textarea id="quizAnswer" rows="2" placeholder="VD: Mình thích vẽ, nấu ăn..."></textarea></div>
+    <div class="quiz-short"><label for="quizAnswer">✍️ Chia sẻ thêm cho câu này (không bắt buộc):</label><textarea id="quizAnswer" rows="3" maxlength="500" placeholder="Điều gì khiến bạn chọn phương án này?"></textarea></div>
     <div class="quiz-nav">
-      <button class="btn btn-mint" onclick="quizNav(-1)">← Trước</button>
+      <button class="btn btn-mint" id="quizPrevButton" type="button" onclick="quizNav(-1)">← Trước</button>
       <span id="quizProgress">1/5</span>
-      <button class="btn btn-pink" onclick="quizNav(1)">Tiếp →</button>
+      <button class="btn btn-pink" id="quizNextButton" type="button" onclick="quizNav(1)">Tiếp →</button>
     </div>
+    <p class="quiz-status" id="quizStatus" role="status" aria-live="polite"></p>
+    <section class="quiz-ai-result hidden" id="quizAiResult" aria-labelledby="quizAiTitle">
+      <h3 id="quizAiTitle">Góc nhìn từ Sen Trắng</h3>
+      <div class="quiz-ai-result-content" id="quizAiReply"></div>
+      <button class="btn btn-quiet" type="button" onclick="resetQuiz()">Làm lại trắc nghiệm</button>
+    </section>
   </div>
 </section>
 
@@ -160,9 +166,15 @@
   <div class="foot-grid">
     <div class="foot-col"><h4>🌉 THCS Huỳnh Thúc Kháng </h4><p>Số 154, Đường Hà Huy Tập, Phường An Khê, TP. Đà Nẵng</p><p>📧 baokhanh2106.suri@gmail.com</p><p>📞 0796.660.319</p></div>
     <div class="foot-col"><h4>Liên kết nhanh</h4><a href="index.html">Trang chủ</a><a href="luyen_de.html">Luyện đề thi</a><a href="https://moet.gov.vn" target="_blank">Bộ GD&ĐT ↗</a><a href="https://danang.gov.vn" target="_blank">Cổng TT Đà Nẵng ↗</a></div>
-    <div class="foot-col"><h4>Giờ hỗ trợ</h4><p>Thứ 2 – Thứ 6: 7:30 – 17:00</p><p>Thứ 7: 8:00 – 11:30</p><p>Chủ nhật: Nghỉ</p></div>
+    <div class="foot-col">
+      <h4>Giờ hỗ trợ</h4>
+      <p>Thứ 2 – Thứ 6: 7:30 – 17:00</p>
+      <p>Thứ 7: 8:00 – 11:30</p>
+      <p>Chủ nhật: 9:00 – 12:00</p> 
+    </div>
   </div>
-  <div class="foot-bottom">© 2025 Hướng Nghiệp Huỳnh Thúc Kháng · Xây dựng bằng 💖 cho học sinh</div>
+  <div class="foot-bottom">© 2026 Hướng Nghiệp Huỳnh Thúc Kháng · Xây dựng bằng 💖 cho học sinh</div>
+  <div class="foot-bottom" style="margin-top: 5px;"> Made by ßaø Khanħ 9<sup>9</sup></div>
 </footer>
 
 <!-- CHAT -->
@@ -170,7 +182,7 @@
 <div class="chat-box liquid-glass" id="chatBox">
   <header>🐰 Sen Trắng <small>siu cấp cute</small><button onclick="toggleChat(false)">–</button></header>
   <div class="chat-log" id="chatLog"></div>
-  <form id="chatForm"><input id="chatInput" placeholder="Hỏi zì đáp nấy nèeee~" autocomplete="off"><button>➤</button></form>
+  <form id="chatForm"><input id="chatInput" placeholder="Viết zì vào đây đi..." autocomplete="off"><button>➤</button></form>
 </div>
 
 <div class="toast" id="toast"></div>

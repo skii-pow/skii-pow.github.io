@@ -110,17 +110,31 @@ body{font-family:'Be Vietnam Pro',sans-serif;background:var(--bg);color:var(--in
 
 /* QUIZ */
 .quiz-container{padding:28px}
+.quiz-container.liquid-glass{padding:24px;border:1px solid #dce9f2;background:#ffffffc9;box-shadow:0 12px 30px #1b52720e}
 .quiz-q{font-size:1.05rem;font-weight:700;margin-bottom:16px}
-.quiz-opts{display:flex;flex-direction:column;gap:10px;margin-bottom:14px}
-.quiz-opt{padding:12px 16px;border-radius:14px;border:2px solid rgba(160,120,255,.15);cursor:pointer;font-size:.9rem;transition:.22s;background:rgba(250,248,255,.8)}
-.quiz-opt:hover{border-color:var(--pink);background:rgba(255,110,180,.06);transform:translateX(4px)}
-.quiz-opt.selected{border-color:var(--pink);background:rgba(255,110,180,.12);font-weight:700;transform:scale(1.02)}
-.quiz-short{margin:14px 0}
+.quiz-opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:14px}
+.quiz-opt{display:flex;min-width:0;min-height:54px;align-items:center;padding:12px 15px;border-radius:12px;border:1.5px solid #dce8f2;cursor:pointer;text-align:left;color:var(--ink);font:600 .9rem 'Be Vietnam Pro',sans-serif;transition:transform .2s,border-color .2s,background .2s,box-shadow .2s;background:#f8fbfe}
+.quiz-opt:hover{border-color:#82b8dc;background:#f0f8ff;transform:translateY(-2px)}
+.quiz-opt.selected{border-color:#398fca;background:#eaf5fd;box-shadow:inset 0 0 0 1px #398fca;font-weight:700}
+.quiz-short{margin:18px 0 14px}
 .quiz-short label{font-size:.85rem;font-weight:600;display:block;margin-bottom:6px}
-.quiz-short textarea{width:100%;border-radius:12px;border:1.5px solid rgba(160,120,255,.2);padding:10px 14px;font-family:inherit;font-size:.88rem;resize:none;outline:none;transition:.25s}
+.quiz-short textarea{width:100%;min-height:82px;border-radius:10px;border:1.5px solid #d6e5f0;padding:12px 14px;background:#fff;color:var(--ink);font:400 .9rem/1.5 'Be Vietnam Pro',sans-serif;resize:vertical;outline:none;transition:border-color .2s,box-shadow .2s}
 .quiz-short textarea:focus{border-color:var(--pink);box-shadow:0 0 0 4px rgba(255,110,180,.1)}
 .quiz-nav{display:flex;align-items:center;gap:14px;justify-content:center;margin-top:10px}
 .quiz-nav span{font-size:.85rem;opacity:.6}
+.quiz-nav span{font-size:.85rem;opacity:.6}
+.quiz-nav .btn:disabled{cursor:not-allowed;opacity:.5;transform:none}
+.quiz-status{min-height:0;margin:0;color:#56738a;font-size:.84rem;text-align:center}
+.quiz-status:empty{display:none}
+.quiz-ai-result{margin-top:20px;padding:20px;border:1px solid #cfe3f0;border-radius:12px;background:linear-gradient(145deg,#f2f9ff,#fbfdff);animation:practiceRise .4s ease-out both}
+.quiz-ai-result h3{margin-bottom:12px;color:#174d76;font-size:1rem}
+.quiz-ai-result-content{color:#31536e;font-size:.9rem;line-height:1.7}
+.quiz-ai-result-content p{margin:0 0 .8em}
+.quiz-ai-result-content p:last-child{margin-bottom:0}
+.quiz-ai-result-content ol,.quiz-ai-result-content ul{margin:.4em 0 .8em;padding-left:1.4em}
+.quiz-ai-result-content li+li{margin-top:.35em}
+.quiz-ai-result .btn{margin-top:16px}
+@media(max-width:560px){.quiz-container.liquid-glass{padding:18px}.quiz-opts{grid-template-columns:1fr;gap:8px}.quiz-opt{min-height:46px;padding:10px 12px;font-size:.84rem}.quiz-short textarea{min-height:76px}.quiz-ai-result{padding:16px}}
 
 /* TABLE */
 .toolbar-row{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:16px}

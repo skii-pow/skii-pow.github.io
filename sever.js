@@ -209,7 +209,7 @@ async function askGemini(systemPrompt, userMsg, maxTokens=200){
   return text.trim();
 }
 
-// ---------- CHAT (trả lời SIÊU NGẮN) ----------
+// ---------- CHAT AI ----------
 app.post('/api/ai/chat', async (req,res)=>{
   try {
     const reply = await askGemini(
@@ -248,11 +248,21 @@ app.post('/api/ai/evaluate', async (req,res)=>{
 // ---------- TRẮC NGHIỆM TÍNH CÁCH / NĂNG LỰC ----------
 app.post('/api/ai/personality', async (req,res)=>{
   try {
-    const {answers, shortAnswer} = req.body;
+    if (!Array.isArray(req.body.answers) || req.body.answers.length !== 5) {
+      return res.status(400).json({reply:null, error:'Vui lòng hoàn thành đủ 5 câu trước khi nhận xét.'});
+    }
+    const answers = req.body.answers.slice(0, 5).map(answer => ({
+      question: String(answer.question || '').slice(0, 300),
+      choice: String(answer.choice || '').slice(0, 200),
+      shortAnswer: String(answer.shortAnswer || '').slice(0, 500)
+    }));
+    const summary = answers.map((answer,index)=>
+      `Câu ${index+1}: ${answer.question}\nLựa chọn: ${answer.choice}\nTrả lời ngắn: ${answer.shortAnswer || '(bỏ trống)'}`
+    ).join('\n\n');
     const reply = await askGemini(
-      'Chuyên viên hướng nghiệp. Dựa câu trả lời trắc nghiệm, nhận xét TỐI ĐA 3 câu: (1) tính cách nổi bật, (2) nhóm nghề phù hợp, (3) gợi ý 1-2 trường cụ thể ở Đà Nẵng. Cấm lan man. Không hỏi lại.',
-      `Câu trả lời: ${JSON.stringify(answers)}\nTrả lời tự do: ${shortAnswer||'không có'}`,
-      512
+      'Bạn là chuyên viên hướng nghiệp thân thiện. Dựa trên cả lựa chọn và câu trả lời ngắn, hãy đưa ra nhận xét bằng tiếng Việt trong 4-5 câu. Nêu điểm mạnh hoặc sở thích có dấu hiệu nổi bật, rồi gợi ý nhiều nhóm nghề hoặc lộ trình có thể khám phá (ví dụ đại học, học nghề, hệ 9+, GDTX tùy bối cảnh). Đây chỉ là gợi ý tham khảo, không phải kết luận hay bài kiểm tra quyết định tương lai; tuyệt đối không ép học sinh theo duy nhất một nghề, ngành hoặc con đường. Tôn trọng câu trả lời còn bỏ trống, không tự suy diễn học lực hay hoàn cảnh. Kết thúc bằng lời khuyến khích ngắn, không hỏi lại.',
+      `Câu trả lời của học sinh:\n${summary}`,
+      768
     );
     res.json({reply});
   } catch(e){

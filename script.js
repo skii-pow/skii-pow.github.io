@@ -43,12 +43,44 @@ function renderNews(){const grid=$('#newsGrid');if(!grid)return;const articles=D
 
 /* QUIZ */
 const QUIZ_QS=[{q:"Bạn thích làm việc với con số hay con người hơn?",opts:["Con số 📊","Con người 🤝","Cả hai đều thích","Chưa rõ lắm"]},{q:"Cuối tuần rảnh, bạn sẽ làm gì?",opts:["Đọc sách / tự học 📖","Chơi thể thao / vẽ 🎨","Nấu ăn / sửa đồ 🔧","Đi chơi với bạn 🎉"]},{q:"Môn nào bạn thấy 'dễ thở' nhất?",opts:["Toán","Văn","Anh","KHTN"]},{q:"10 năm nữa, bạn hình dung mình sẽ?",opts:["Làm văn phòng 💼","Làm kỹ thuật / tay nghề 🔩","Sáng tạo / nghệ thuật 🎭","Kinh doanh tự do 🚀"]},{q:"Điều gì khiến bạn hào hứng nhất?",opts:["Giải được bài khó 🧩","Giúp đỡ người khác 💕","Tạo ra sản phẩm 🛠️","Khám phá điều mới 🌍"]}];
-let quizIdx=0,quizAnswers=[];
+let quizIdx=0,quizAnswers=[],quizShortAnswers=Array(QUIZ_QS.length).fill(''),quizSubmitting=false;
 window.openQuiz=function(){const s=$('#quiz');if(s)s.scrollIntoView({behavior:'smooth'});renderQuizQ();};
-function renderQuizQ(){const qEl=$('#quizQ'),oEl=$('#quizOpts'),prog=$('#quizProgress');if(!qEl)return;const q=QUIZ_QS[quizIdx];qEl.textContent=q.q;oEl.innerHTML=q.opts.map((o,i)=>`<div class="quiz-opt ${quizAnswers[quizIdx]===i?'selected':''}" onclick="pickOpt(${i})">${o}</div>`).join('');prog.textContent=`${quizIdx+1}/${QUIZ_QS.length}`;}
-window.pickOpt=function(i){quizAnswers[quizIdx]=i;renderQuizQ();};
-window.quizNav=function(dir){quizIdx+=dir;if(quizIdx<0)quizIdx=0;if(quizIdx>=QUIZ_QS.length){submitQuiz();return;}renderQuizQ();};
-function submitQuiz(){const short=$('#quizAnswer')?$('#quizAnswer').value:'';localStorage.setItem('hn_quiz',JSON.stringify({answers:quizAnswers,short}));toast('Đã lưu trắc nghiệm! AI sẽ dùng để gợi ý nghề~ 🎯');}
+function renderQuizQ(){
+  const qEl=$('#quizQ'),oEl=$('#quizOpts'),prog=$('#quizProgress'),shortInput=$('#quizAnswer');
+  if(!qEl)return;
+  const q=QUIZ_QS[quizIdx];qEl.textContent=q.q;oEl.replaceChildren();
+  q.opts.forEach((option,index)=>{
+    const button=document.createElement('button');button.type='button';button.className='quiz-opt'+(quizAnswers[quizIdx]===index?' selected':'');button.textContent=option;button.setAttribute('aria-pressed',String(quizAnswers[quizIdx]===index));button.addEventListener('click',()=>window.pickOpt(index));oEl.append(button);
+  });
+  if(shortInput){shortInput.value=quizShortAnswers[quizIdx]||'';shortInput.oninput=()=>{quizShortAnswers[quizIdx]=shortInput.value;};}
+  const previous=$('#quizPrevButton'),next=$('#quizNextButton'),status=$('#quizStatus');
+  if(previous)previous.disabled=quizIdx===0;
+  if(next){next.textContent=quizIdx===QUIZ_QS.length-1?'Gửi Sen nhận xét':'Tiếp →';next.disabled=quizSubmitting;}
+  if(prog)prog.textContent=`${quizIdx+1}/${QUIZ_QS.length}`;
+}
+window.pickOpt=function(index){quizAnswers[quizIdx]=index;renderQuizQ();};
+window.quizNav=function(direction){if(quizSubmitting)return;$('#quizStatus').textContent='';if(direction<0){quizIdx=Math.max(0,quizIdx-1);renderQuizQ();return;}if(quizIdx<QUIZ_QS.length-1){quizIdx++;renderQuizQ();return;}submitQuiz();};
+window.resetQuiz=function(){quizIdx=0;quizAnswers=[];quizShortAnswers=Array(QUIZ_QS.length).fill('');$('#quizAiResult')?.classList.add('hidden');$('#quizAiReply')?.replaceChildren();$('#quizStatus').textContent='';renderQuizQ();};
+async function submitQuiz(){
+  const status=$('#quizStatus'),result=$('#quizAiResult'),reply=$('#quizAiReply'),button=$('#quizNextButton');
+  if(quizAnswers.some(answer=>!Number.isInteger(answer))){if(status)status.textContent='Bạn hãy chọn một phương án cho mỗi câu trước khi gửi Sen nhận xét.';return;}
+  if(!user){window.showLogin('login');toast('Đăng nhập để nhận nhận xét từ Sen.');return;}
+  quizSubmitting=true;if(button){button.disabled=true;button.textContent='Sen đang nhận xét...';}
+  if(status)status.textContent='Sen Trắng đang đọc các lựa chọn và câu trả lời của bạn...';
+  if(result)result.classList.add('hidden');
+  const answers=QUIZ_QS.map((question,index)=>({question:question.q,choice:question.opts[quizAnswers[index]],shortAnswer:quizShortAnswers[index].trim()}));
+  const response=await api('/ai/personality',{method:'POST',body:JSON.stringify({answers})});
+  quizSubmitting=false;if(button)button.disabled=false;
+  if(response&&response.status===401){user=null;window.showLogin('login');if(status)status.textContent='Phiên đăng nhập đã hết hạn. Hãy đăng nhập rồi gửi lại.';renderQuizQ();return;}
+  if(!response||!response.reply){if(status)status.textContent=(response&&response.error)||'Chưa nhận được nhận xét từ AI. Câu trả lời của bạn vẫn được giữ lại để thử lại.';renderQuizQ();return;}
+  if(reply)renderAiMessage(reply,response.reply);
+  if(result)result.classList.remove('hidden');
+  if(status)status.textContent='';
+  localStorage.setItem('hn_quiz',JSON.stringify({answers,completedAt:new Date().toISOString()}));
+  quizShortAnswers=Array(QUIZ_QS.length).fill('');
+  if($('#quizAnswer'))$('#quizAnswer').value='';
+  if(button)button.textContent='Gửi lại AI nhận xét';
+}
 
 /* SCHOOLS */
 function renderSchools(){const tb=$('#schoolTable');if(!tb)return;const q=normalizeSearchText((($('#searchSchool')||{}).value||''));const rows=DATA.schools.filter(s=>(schoolFilter==='all'||s.type===schoolFilter)&&normalizeSearchText(s.name).includes(q));tb.querySelector('tbody').innerHTML=rows.map(s=>`<tr><td><b>${s.name}</b></td><td><span class="badge b-${{'THPT':'blue','Nghề':'pink','9+':'orange','GDTX':'green'}[s.type]||'blue'}">${s.type}</span></td><td>${s.diemChuan}</td><td>${s.totNghiep}%</td><td>${s.chatLuong}%</td></tr>`).join('')||'<tr><td colspan="5" style="text-align:center;opacity:.5;padding:20px">Không tìm thấy~</td></tr>';renderStats(rows);}
@@ -103,8 +135,8 @@ function renderAiMessage(element,text){
   flushParagraph();
 }
 function bubble(cls,text){const log=$('#chatLog');if(!log)return null;const d=document.createElement('div');d.className='msg '+cls;if(cls==='ai')renderAiMessage(d,text);else d.textContent=text;log.appendChild(d);log.scrollTop=log.scrollHeight;return d;}
-window.toggleChat=function(open){const b=$('#chatBox');if(!b)return;const w=open!==undefined?open:!b.classList.contains('open');if(w&&!user){window.showLogin('login');return;}b.classList.toggle('open',w);if(w&&!b.querySelector('.msg'))bubble('ai','Chào~ 🐰 Hỏi gọn nhé!');};
-async function sendChat(m){if(!user){window.showLogin('login');return;}bubble('me',m);const typing=bubble('ai','Đang tìm câu trả lời...');const quiz=JSON.parse(localStorage.getItem('hn_quiz')||'null');const res=await api('/ai/chat',{method:'POST',body:JSON.stringify({message:m,quiz})});if(typing)typing.remove();if(res&&res.status===401){user=null;window.showLogin('login');return;}bubble('ai',(res&&res.reply)||(res&&res.error)||'Chưa nhận được phản hồi từ máy chủ AI. Hãy thử lại sau.');}
+window.toggleChat=function(open){const b=$('#chatBox');if(!b)return;const w=open!==undefined?open:!b.classList.contains('open');if(w&&!user){window.showLogin('login');return;}b.classList.toggle('open',w);if(w&&!b.querySelector('.msg'))bubble('ai','Chào nhé bạn iu iu!');};
+async function sendChat(m){if(!user){window.showLogin('login');return;}bubble('me',m);const typing=bubble('ai','Đang suy nghĩ...');const quiz=JSON.parse(localStorage.getItem('hn_quiz')||'null');const res=await api('/ai/chat',{method:'POST',body:JSON.stringify({message:m,quiz})});if(typing)typing.remove();if(res&&res.status===401){user=null;window.showLogin('login');return;}bubble('ai',(res&&res.reply)||(res&&res.error)||'Chưa nhận được phản hồi từ máy chủ AI. Hãy thử lại sau.');}
 
 /* PRACTICE PAGE */
 const EXAM_RESOURCES=[
